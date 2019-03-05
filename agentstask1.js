@@ -716,9 +716,9 @@ sA3 = brick.sensor(A3).readRawData;
 
 //энкодеры
 
-var eLeft = brick.encoder(E3);
+var eLeft = brick.encoder(E1);
 
-var eRight = brick.encoder(E4);
+var eRight = brick.encoder(E2);
 
 //длина клетки
 
@@ -765,10 +765,14 @@ function angle() {
 
     directionOld = _direction;
 
-}
-var mtimer = script.timer(50);
+}
+function printGyro() {
+
+    print("direction=" + direction);
+
+}
+
 
-mtimer.timeout.connect(angle);
 function turnDirection(_angle, _v) {
 
     _angle = azimut + _angle;
@@ -789,7 +793,7 @@ function turnDirection(_angle, _v) {
 
     mR(-_vel * sgn);
 
-    while (Math.abs(angleOfRotate = _angle - direction) > 8000) {
+    while (Math.abs(angleOfRotate = _angle + direction) > 8000) {
 
         script.wait(50);
 
@@ -938,9 +942,15 @@ var main = function()
     //while (!brick.keys().wasPressed(KeysEnum.Up))         
     //script.wait(100);
 	
-	recartag();
+	//recartag();
 	brick.gyroscope().calibrate(14000);
-	script.wait(15000);
+	script.wait(15000);
+	var ptimer = script.timer(300);
+
+ptimer.timeout.connect(printGyro);
+var mtimer = script.timer(50);
+
+mtimer.timeout.connect(angle);
 	mailbox.connect("192.168.77.1");
 	print(mailbox.myHullNumber());
 	//var pager = script.timer(20);
@@ -978,7 +988,7 @@ var main = function()
 		//turnright(90);
 		//turnr(50,180);
 		//turnl(50,90);
-		//turnDirection(90, 50);
+		turnDirection(90, 50);
 		
 		//straight(300,70);
 	
