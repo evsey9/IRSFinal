@@ -1,11 +1,6 @@
 var __interpretation_started_timestamp__;
 var pi = 3.1415926535897931;
-robot = {
-	wheelD: 8.0,
-	track: 20,
-	cpr: 360,
-	v: 50
-	}
+
 var x;
 	var b;
 
@@ -684,7 +679,21 @@ var recartag = function()
 
 	return;
 
-}
+}
+/*----------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+ARTAG END*/
+robot = {
+	wheelD: 8.0,
+	track: 20,
+	cpr: 360,
+	v: 50
+	
+	}
 var readGyro = brick.gyroscope().read
 mL	=	brick.motor('M1').setPower   // левый мотор
 mR	=	brick.motor('M2').setPower   // правый мотор
@@ -697,7 +706,8 @@ abs =	Math.abs
 wait = script.wait
 
 var led = brick.led();
-
+var ikL = brick.sensor('A1').read
+var ikF = brick.sensor('A2').read
 
 
 
@@ -708,11 +718,11 @@ var led = brick.led();
 
 //сенсоры ИК
 
-sA1 = brick.sensor(A1).readRawData;
+sA1 = brick.sensor("A1").read;
 
-sA2 = brick.sensor(A2).readRawData;
+sA2 = brick.sensor("A2").read;
 
-sA3 = brick.sensor(A3).readRawData;
+sA3 = brick.sensor("A3").read;
 
 //энкодеры
 
@@ -722,7 +732,7 @@ var eRight = brick.encoder(E2);
 
 //длина клетки
 
-var cellLength = 40 * robot.cpr / (pi * robot.wheelD);
+var cellLength = 150 * robot.cpr / (pi * robot.wheelD);
 
 var direction = 0; // absolute angle of direction movement
 
@@ -788,13 +798,17 @@ function turnDirection(_angle, _v) {
     var sgn = angleOfRotate == 0 ? 0 :
 
         angleOfRotate / Math.abs(angleOfRotate);
-
+	print(sgn)
     mL(_vel * sgn);
 
     mR(-_vel * sgn);
 
     while (Math.abs(angleOfRotate = _angle + direction) > 8000) {
-
+		mL(_vel * sgn);
+
+    mR(-_vel * sgn);
+
+		print(sgn)
         script.wait(50);
 
     }
@@ -806,13 +820,7 @@ function turnDirection(_angle, _v) {
     script.wait(500);
 
 }
-robot = {
-	wheelD: 8.0,
-	track: 20,
-	cpr: 360,
-	v: 50
-	
-	}
+
 
 function cm2cpr(cm){return(cm / (pi * robot.wheelD)) * robot.cpr}
 function motors(vL, vR){
@@ -853,8 +861,9 @@ function straightpid(cm){
 	motors(0)
 }
 function straight(cm,power){
-	var path = cm2cpr(cm)
-	var kp = 3;
+	var path = cm2cpr(cm)
+	var L = 13
+	var kp = 1;
 	var startStop = path / 4
 	var v0 = 30;
 	var vM = 30;
@@ -863,67 +872,72 @@ function straight(cm,power){
 	//motors()
 	brick.encoder("E1").reset();
 	brick.encoder("E2").reset();
-	var ang = readYaw()/1000;
+	var ang = readYaw()/1000;
+	var drf = 0
 	while (-eL() < path) { 
 		var a = readYaw()/1000;
 		print("ang " + ang)
 		print("a " + a)
 		print("vm " + vM)
-		var delta = (ang - a) * kp
+		var er1 = (ang - a) * kp
+		var er2 = 0 //eL()-eR()
+		var sensread = brick.sensor('A1').read()
+		var er3 = 0
+		print(sensread)
+		if (sensread < 40 && sensread > 5){
+		er3 = (sA1() - L) / 10
+		brick.display().addLabel("er3: "+er3,1,1)
+		
+		}
+		ang -= er3
+		brick.display().addLabel("ang: "+ang,1,20)
+		var uV = er1 + er2
+		brick.display().redraw()
 		if (-eL() < startStop) vM += dV
 		else if (-eL() > startStop * 3) vM -= dV
-		print("delta " + delta)
-		motors(power - delta, power + delta)
+		//print("delta " + delta)
+		motors(power + uV, power - uV)
 		wait(100) }
 	brick.motor("M1").brake(500);
 	brick.motor("M2").brake(500);
 	motors(0)
 }
 
-function turnr(speed, deg){
-	var expected = 0;
-	brick.encoder("E1").reset();
-	brick.encoder("E2").reset();
-	var ld = -eL();
-	var rd = -eR();
-	var a = readYaw()/1000;
-	while((readYaw()/1000 - a) > deg){
-		ld = -eL();
-		rd = -eR();
-		print("yaw "+readYaw()/1000)
-		
-		expected += speed;
-		motors(speed, -speed)
-		script.wait(10);
-	
-		}
-	brick.motor("M1").brake(500);
-	brick.motor("M2").brake(500);
-	motors(0)
-	
-}
-function turnl(speed, deg){
-	var expected = 0;
-	brick.encoder("E1").reset();
-	brick.encoder("E2").reset();
-	var ld = -eL();
-	var rd = -eR();
-	var a = readYaw()/1000;
-	print(a)
-	while((readYaw()/1000 - a) < deg){
-		ld = -eL();
-		rd = -eR();
-		print("yaw "+readYaw()/1000)
-		print("a-" + (a - readYaw()/1000))
-		expected += speed;
-		motors(-speed, speed)
-		script.wait(10);
-	
-		}
-	brick.motor("M1").brake(500);
-	brick.motor("M2").brake(500);
-	motors(0)
-	
+
+
+function forward1(_v, _kcell) {
+
+    _alpha = azimut;
+
+	eLeft.reset()
+	eRight.reset()
+
+    var _vel = _v == undefined ? 10 : _v;
+
+    var u = 0;
+
+    var el = Math.abs(eLeft.readRawData());
+
+    while (-Math.abs(eLeft.readRawData()) < el + (_kcell *
+
+        cellLength)) {
+		print(_alpha)
+        u = 3 * (_alpha - direction / 1000);
+
+        mL(_vel - u);
+
+        mR(_vel + u);
+
+        script.wait(5);
+
+    }
+
+    brick.motor(M1).brake();
+
+    brick.motor(M2).brake();
+
+    script.wait(300);
+
 }
 function messages(){
 	if(mailbox.hasMessages()){
@@ -935,7 +949,12 @@ function messages(){
 }
 var main = function()
 {
-	__interpretation_started_timestamp__ = Date.now();
+	__interpretation_started_timestamp__ = Date.now();
+	/*while(true){
+	brick.display().addLabel(brick.sensor('A1').read(), 1, 1)
+	brick.display().redraw()
+	wait(5)
+		}*/
 	print("gyro initialaize...");
 	//brick.configure("video2", "lineSensor");
     //brick.lineSensor("video2").init(true);
@@ -947,10 +966,10 @@ var main = function()
 	script.wait(15000);
 	var ptimer = script.timer(300);
 
-ptimer.timeout.connect(printGyro);
-var mtimer = script.timer(50);
+	ptimer.timeout.connect(printGyro);
+	var mtimer = script.timer(50);
 
-mtimer.timeout.connect(angle);
+	mtimer.timeout.connect(angle);
 	mailbox.connect("192.168.77.1");
 	print(mailbox.myHullNumber());
 	//var pager = script.timer(20);
@@ -988,9 +1007,11 @@ mtimer.timeout.connect(angle);
 		//turnright(90);
 		//turnr(50,180);
 		//turnl(50,90);
-		turnDirection(90, 50);
-		
-		//straight(300,70);
+		//turnDirection(90, 50);
+		//forward1(70,2);
+		straight(200,70);
+		//turnDirection(180,50);
+		//straight(200,70);
 	
 	return;
 }
