@@ -541,11 +541,12 @@ var main = function()
 {
 
 	__interpretation_started_timestamp__ = Date.now();
+	var calibValues = [-145, -51, -116, -73, 76, 3977]
+	brick.gyroscope().setCalibrationValues(calibValues)
+	//brick.gyroscope().calibrate(60000);
 	
-	brick.gyroscope().calibrate(14000);
-
-	script.wait(15000);
-		
+	//script.wait(61000);
+	//print(brick.gyroscope().getCalibrationValues())
 	//turnDirection(-90,50)
 	//turnDirection(90,50)
 	l_hand();
