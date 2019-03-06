@@ -332,9 +332,9 @@ robot = {
 
 	cpr: 385,
 
-	v: 80,
+	v: 60,
 	
-	to_ik: 8,
+	to_ik: 9,
 	to_ik2: 11
 	}
 
@@ -383,12 +383,14 @@ function eht(cm,v)
 	
 		drf = 0
 	
-		var L = 20 // расстояние до стены (идеал)
+		var L = 12 // расстояние до стены (идеал)
 		var d = 0 // расстояние до стены(реал)
-
+		var fl = false
 		while (-eL() < pth)
 
-			{
+			{
+				left = brick.sensor("A1").read();
+				front = brick.sensor("D1").read();
 				if (eL() < path0 + startStop) {vM += dV;}
 
 				else if (eL() > path0 + startStop * 3) { vM -= dV }
@@ -399,23 +401,34 @@ function eht(cm,v)
 
 				er2 = eR() - eL();
 				
-				d0 = brick.sensor("A1").read();
-				if (2<d0 && d0 < 100)
+				
+				if (2<left && left < 100)
 					{
-							d = d0
-					}
-				er3 = L-d0
-					
-				uV = er1 + er2;
-
+							d = left
+					}
+				if (d < 25 && Math.abs(d - L) > 1){
+				//ang = brick.gyroscope().read()[6] / 1000
+				er3 = (L-d) > 0 ? 15 : -15
+				er1 = 0
+				er2 = 0}
+				else {er3 = 0;}
+				if(d > 25){
+				
+					fl = true;
+					print("FLAGGED WITH SENS "+d)
+					}
+				er2 = 0;
+				uV = er1 * 2 + er2 + er3;
+				brick.display().addLabel("er3: "+er3 + " uV: "+uV, 1, 60)
+				print("er3: "+er3 + " uV: "+uV)
 				motors(robot.v - uV, robot.v + uV)
-
+				if(brick.sensor("A2").read() <= cell_size / 2 - robot.to_ik2 + 5) break;
 				script.wait(100);
 
 			}
 
 			
-
+return fl;
 }
 
 
@@ -502,7 +515,7 @@ function l_wall(pt)
 				if (brick.sensor("A1").read() >= 25){
 					p = 0
 					}
-				if(brick.sensor("A2").read() <= cell_size / 2 - robot.to_ik2) break;
+				if(brick.sensor("A2").read() <= cell_size / 2 - robot.to_ik2 + 5) break;
 				p0 += -20-p*2
 				p1 += -20+p*2
 				motors(-(p0-el)*3, -(p1-er)*3 );
@@ -516,20 +529,29 @@ function l_wall(pt)
 
 function l_hand()
 {
-	var a1 = brick.sensor("A1").read();
-	var a2 = brick.sensor("A2").read();
+	var left = brick.sensor("A1").read();
+	var front = brick.sensor("D1").read();
+	var flag = false
 	while(true)
 		{
-			a1 = brick.sensor("A1").read();
-			a2 = brick.sensor("A2").read();
-			brick.display().addLabel("CALL A1: " + brick.sensor("A1").read() + " A2: "+ brick.sensor("A2").read(), 1, 1);
+			left = brick.sensor("A1").read();
+			front = brick.sensor("D1").read();
+			brick.display().addLabel("CALL A1: " + brick.sensor("A1").read() + " A2: "+ brick.sensor("A2").read() + " D1: "+ brick.sensor("D1").read(), 1, 1);
+			print("CHECK")
 			brick.display().redraw()
-			print(a2);
-			brick.playTone(1000, 50);
-			if (a1 > cell_size) {turnDirection(90, 40);}
-			if (a1 < cell_size / 2 && a2 < cell_size / 2 - robot.to_ik2 + 5) {turnDirection(-90, 40);}
+			print(front);
+			brick.playTone(1000, 50);
+			if (flag){
+				flag = false;
+				turnDirection(90, 40); print("TURN LEFT FLAG")
+				eht(cell_size / 2)
+				}
+			else{
+				if (left > cell_size) {turnDirection(90, 40); print("TURN LEFT"); flag = eht(cell_size / 2); print("MOVE CELL");}
+			else if (left < cell_size / 2 && front < cell_size / 2 - robot.to_ik2 + 5) {turnDirection(-90, 40); print("TURN RIGHT");}
 			//eht(20);
-			else l_wall(cell_size - 5)
+			else {flag = eht(cell_size / 2); print("MOVE CELL");} //l_wall(cell_size)
+		}
 			script.wait(10)
 			//a2 = brick.sensor("A2").read()
 			//a1 = brick.sensor("A1").read();
@@ -544,7 +566,17 @@ var main = function()
 	var calibValues = [-145, -51, -116, -73, 76, 3977]
 	brick.gyroscope().setCalibrationValues(calibValues)
 	//brick.gyroscope().calibrate(60000);
-	
+	/*while(true){
+		brick.display().addLabel("D1: "+brick.sensor("D1").read(), 1, 60)
+		brick.display().addLabel("A1: "+brick.sensor("A1").read(), 1, 1)
+		brick.display().addLabel("A2: "+brick.sensor("A2").read(), 1, 20)
+		brick.display().addLabel("A3: "+brick.sensor("A3").read(), 1, 40)
+		brick.display().addLabel("A4: "+brick.sensor("A4").read(), 1, 60)
+		brick.display().addLabel("A5: "+brick.sensor("A5").read(), 1, 80)
+		brick.display().addLabel("A6: "+brick.sensor("A6").read(), 1, 100)
+		brick.display().redraw()
+		script.wait(5)
+		}*/
 	//script.wait(61000);
 	//print(brick.gyroscope().getCalibrationValues())
 	//turnDirection(-90,50)
