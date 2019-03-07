@@ -42,7 +42,7 @@ var t = 0;
 var mtimer = script.timer(50);
 mtimer.timeout.connect(angle);
 
-function turnDirection(_angle, _v){
+function turnDirection(_angle, _v){
 	brick.playTone(2000, 50);
 	_angle = azimut + _angle;
 	azimut = _angle;
@@ -51,17 +51,17 @@ function turnDirection(_angle, _v){
 	var angleOfRotate = _angle + direction;
 	var sgn = angleOfRotate == 0 ? 0 :
 	angleOfRotate/Math.abs(angleOfRotate);
-	motors(_v*sgn, -_v*sgn)
-	brick.display().addLabel("TURNING "+_angle, 1, 40)
-	brick.display().redraw()
+	motors(_v*sgn, -_v*sgn)
+	brick.display().addLabel("TURNING "+_angle, 1, 40)
+	brick.display().redraw()
 	angle()
-	while (Math.abs(angleOfRotate = _angle + direction) > 5000){
+	while (Math.abs(angleOfRotate = _angle + direction) > 5000){
 		motors(_v*sgn, -_v*sgn)
-		brick.display().addLabel("dir " + direction, 1, 60)
-		brick.display().addLabel("AOR " + angleOfRotate, 1, 70)
-		brick.display().redraw()
+		brick.display().addLabel("dir " + direction, 1, 60)
+		brick.display().addLabel("AOR " + angleOfRotate, 1, 70)
+		brick.display().redraw()
 		script.wait(50);
-	}
+	}
 	brick.display().clear()
 	brick.motor("M1").brake();
 	brick.motor("M2").brake();
@@ -330,15 +330,15 @@ robot = {
 
 	track:20,
 
-	cpr: 385,
+	cpr: 360,
 
 	v: 60,
-	
-	to_ik: 9,
+	
+	to_ik: 9,
 	to_ik2: 11
 	}
 
-var cell_size = 40
+var cell_size = 40
 var ik_cell = cell_size - robot.to_ik
 
 function cm_to_cpr(cm){ return (cm/(pi*robot.wheelD)) * robot.cpr; }
@@ -370,7 +370,7 @@ function eht(cm,v)
 		v = v == undefined ? robot.v : v;
 
 		var path0 = eL();
-
+		path0 = 0
 		var pth = cm_to_cpr(cm) + path0;
 
 		var v0 = 30, vM = v0;
@@ -385,29 +385,37 @@ function eht(cm,v)
 	
 		var L = 11 // расстояние до стены (идеал)
 		var d = 0 // расстояние до стены(реал)
-		var d1 = 0 // расстояние до стены справа
+		var d1 = 0 // расстояние до стены справа
 		var fl = false
 		while (-eL() < pth)
 
-			{
-				left = brick.sensor("A1").read();
-				right = brick.sensor("A2").read();
+			{
+				left = brick.sensor("A1").read();
+				right = brick.sensor("A2").read();
 				front = brick.sensor("D1").read();
+				
+				
+				
+				if (2<left && left < 25)
+					{
+							d = left
+					}
+				else{
+					d = L
+					}
+				if (2<right && right < 25)
+					{
+							d1 = right
+					}
+				else{
+					d1 = L
+					}
 				er3 = ((L - d) - (L - d1))
 				ang += er3 / 10
-				
-				if (2<left && left < 100)
-					{
-							d = left
-					}
-				if (2<right && right < 100)
-					{
-							d1 = right
-					}
-				
-				if (eL() < path0 + startStop) {vM += dV;}
+				print("el: "+-eL() + " startStop: "+startStop)
+					if (-eL() < path0 + startStop) {vM += dV;}
 
-				else if (eL() > path0 + startStop * 3) { vM -= dV }
+				else if (-eL() > path0 + startStop * 3) { vM -= dV }
 
 				er1 = ang - (brick.gyroscope().read()[6] / 1000) ;
 				
@@ -416,31 +424,32 @@ function eht(cm,v)
 				er2 = eR() - eL();
 				
 				
-				/*if (d < 25 && Math.abs(d - L) > 1){
+				/*if (d < 25 && Math.abs(d - L) > 1){
 				//ang = brick.gyroscope().read()[6] / 1000
-				er3 = (L-d) > 0 ? 15 : -15
-				er1 = 0
+				er3 = (L-d) > 0 ? 15 : -15
+				er1 = 0
 				er2 = 0}
-				else {er3 = 0;}
-				if(d > 25){
-				
-					fl = true;
-					print("FLAGGED WITH SENS "+d)
-					}
-				er2 = 0;*/
-				er3 = ((L - d) - (L - d1))
-				ang += er3 / 10
+				else {er3 = 0;}*/
+				if (d > 25){
+				
+					fl = true;
+					print("FLAGGED WITH SENS "+d)
+					}
+				er2 = 0;
+				//er3 = ((L - d) - (L - d1))
+				//ang += er3 / 10
 					
 				uV = er1;
 				brick.display().addLabel("er3: "+er3 + " uV: "+uV, 1, 60)
-				print("er3: "+er3 + " uV: "+uV)
-				motors(robot.v - uV, robot.v + uV)
-				if(front <= cell_size / 2 - robot.to_ik2 + 5) break;
+				print("er3: "+er3 + " uV: "+uV)
+				motors(vM - uV, vM + uV)
+				//if(front <= cell_size / 2 - robot.to_ik2) break;
 				script.wait(100);
 
 			}
-
-			
+brick.motor("M1").brake(500);
+brick.motor("M2").brake(500);
+motors(0, 0);
 return fl;
 }
 
@@ -473,35 +482,6 @@ function rotate(deg)
 
 	
 
-function sent_geted_msg(bort_num)
-
-{
-
-		if (mailbox.hasMessages())
-
-			{
-
-				var q = mailbox.receive();
-
-				brick.display().addLabel( q, 10,10 )
-
-				brick.display().redraw()
-
-				if ( bort_num == 2 )
-
-					{mailbox.send( 3,q );}
-
-				else if (bort_num == 3)
-
-					{mailbox.send(1, q);}
-
-				else
-
-					{mailbox.send( 2,q+1);}
-
-			}
-
-}
 
 function l_wall(pt)
 {
@@ -524,15 +504,15 @@ function l_wall(pt)
 					{
 							d = d0
 					}
-				p = (d-L)/10
-				if (brick.sensor("A1").read() >= 25){
-					p = 0
-					}
+				p = (d-L)/10
+				if (brick.sensor("A1").read() >= 25){
+					p = 0
+					}
 				if(brick.sensor("A2").read() <= cell_size / 2 - robot.to_ik2 + 5) break;
 				p0 += -20-p*2
 				p1 += -20+p*2
-				motors(-(p0-el)*3, -(p1-er)*3 );
-				brick.display().addLabel("A1: " + d0 + " A2: "+ brick.sensor("A2").read(), 1, 1);
+				motors(-(p0-el)*3, -(p1-er)*3 );
+				brick.display().addLabel("A1: " + d0 + " A2: "+ brick.sensor("A2").read(), 1, 1);
 				brick.display().redraw()
 				script.wait(10)		
 				}
@@ -544,27 +524,27 @@ function l_hand()
 {
 	var left = brick.sensor("A1").read();
 	var front = brick.sensor("D1").read();
-	var flag = false
+	var flag = false
 	while(true)
-		{
-			left = brick.sensor("A1").read();
-			front = brick.sensor("D1").read();
-			brick.display().addLabel("CALL A1: " + brick.sensor("A1").read() + " A2: "+ brick.sensor("A2").read() + " D1: "+ brick.sensor("D1").read(), 1, 1);
-			print("CHECK")
+		{
+			left = brick.sensor("A1").read();
+			front = brick.sensor("D1").read();
+			brick.display().addLabel("CALL A1: " + brick.sensor("A1").read() + " A2: "+ brick.sensor("A2").read() + " D1: "+ brick.sensor("D1").read(), 1, 1);
+			print("CHECK")
 			brick.display().redraw()
-			print(front);
-			brick.playTone(1000, 50);
-			if (flag){
-				flag = false;
-				turnDirection(90, 40); print("TURN LEFT FLAG")
-				eht(cell_size / 2)
+			print(front);
+			//brick.playTone(500, 50);
+			if (flag){
+				flag = false;
+				turnDirection(90, 40); print("TURN LEFT FLAG")
+				eht(cell_size)
 				}
-			else{
+			else{
 				if (left > cell_size) {turnDirection(90, 40); print("TURN LEFT"); flag = eht(cell_size / 2); print("MOVE CELL");}
 			else if (left < cell_size / 2 && front < cell_size / 2 - robot.to_ik2 + 5) {turnDirection(-90, 40); print("TURN RIGHT");}
 			//eht(20);
-			else {flag = eht(cell_size / 2); print("MOVE CELL");} //l_wall(cell_size)
-		}
+			else {flag = eht(cell_size); print("MOVE CELL");} //l_wall(cell_size)
+		}
 			script.wait(10)
 			//a2 = brick.sensor("A2").read()
 			//a1 = brick.sensor("A1").read();
@@ -574,37 +554,41 @@ function l_hand()
 var main = function()
 
 {
-
+	
 	__interpretation_started_timestamp__ = Date.now();
-	var calibValues = [-145, -51, -116, -73, 76, 3977]
-	brick.gyroscope().setCalibrationValues(calibValues)
+	var calibValues = [-207, -73, -81, -148, 31, 3977]
+	brick.gyroscope().setCalibrationValues(calibValues)
 	//brick.gyroscope().calibrate(60000);
-	/*while(true){
-		brick.display().addLabel("D1: "+brick.sensor("D1").read(), 1, 60)
-		brick.display().addLabel("A1: "+brick.sensor("A1").read(), 1, 1)
-		brick.display().addLabel("A2: "+brick.sensor("A2").read(), 1, 20)
-		brick.display().addLabel("A3: "+brick.sensor("A3").read(), 1, 40)
-		brick.display().addLabel("A4: "+brick.sensor("A4").read(), 1, 60)
-		brick.display().addLabel("A5: "+brick.sensor("A5").read(), 1, 80)
-		brick.display().addLabel("A6: "+brick.sensor("A6").read(), 1, 100)
-		brick.display().redraw()
-		script.wait(5)
+	/*while(true){
+		brick.display().addLabel("D1: "+brick.sensor("D1").read(), 1, 60)
+		brick.display().addLabel("A1: "+brick.sensor("A1").read(), 1, 1)
+		brick.display().addLabel("A2: "+brick.sensor("A2").read(), 1, 20)
+		brick.display().addLabel("A3: "+brick.sensor("A3").read(), 1, 40)
+		brick.display().addLabel("A4: "+brick.sensor("A4").read(), 1, 60)
+		brick.display().addLabel("A5: "+brick.sensor("A5").read(), 1, 80)
+		brick.display().addLabel("A6: "+brick.sensor("A6").read(), 1, 100)
+		brick.display().redraw()
+		script.wait(5)
 		}*/
 	//script.wait(61000);
 	//print(brick.gyroscope().getCalibrationValues())
+	//brick.playTone(1000, 50);
+	//script.wait(5000);
 	//turnDirection(-90,50)
-	//turnDirection(90,50)
+	//turnDirection(90,50)
 	l_hand();
-	l_wall(280);
-	turnDirection(-90, 40);
-	l_wall(120);
-	turnDirection(-90, 40);
-	l_wall(200);
-	turnDirection(90, 40);
-	l_wall(80);
-	turnDirection(-90, 40);
-	l_wall(80);
-	turnDirection(-90, 40);
+	eht(cell_size);
+	script.wait(5000);
+	l_wall(280);
+	turnDirection(-90, 40);
+	l_wall(120);
+	turnDirection(-90, 40);
+	l_wall(200);
+	turnDirection(90, 40);
+	l_wall(80);
+	turnDirection(-90, 40);
+	l_wall(80);
+	turnDirection(-90, 40);
 	l_wall(200);
 	//print(typeof(getPhoto()))
 	//brick.configure("video2", "lineSensor");

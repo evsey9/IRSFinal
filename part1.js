@@ -7,10 +7,10 @@ function messages(){
 		var msg = mailbox.receive();
 		var msgr = msg.split();
 		msgr = msgr[0].split(" ")
-		//print(msgr[0].split(" "));
+		//print(msgr[0].split(" "));
 		msg = msgr[1] + " " + msgr[2] + " " + msgr[3]
 		brick.display().addLabel(msg,1,20*(parseInt(msgr[0]) - 1) + 1);
-		brick.display().redraw();
+		brick.display().redraw();
 		
 		//script.wait(100);
 		}
@@ -26,16 +26,16 @@ var main = function()
 	var pager = script.timer(20);
 	pager.timeout.connect(this, function() {messages() });
 	pager.start();
-	while(true){
-		var left = brick.sensor("A1").read() > 20 ? 0 : 1;
-		var right = brick.sensor("A2").read() > 20 ? 0 : 1;
+	while(true){
+		var left = brick.sensor("A1").read() > 20 ? 0 : 1;
+		var right = brick.sensor("A2").read() > 20 ? 0 : 1;
 		var front = brick.sensor("D1").read() > 20 ? 0 : 1;
-		if(mailbox.myHullNumber() == 1){
-			brick.display().addLabel(left + " " + front + " " + right, 1, 1)
-			brick.display().redraw()
-			}
+		if(mailbox.myHullNumber() == 1){
+			brick.display().addLabel(left + " " + front + " " + right, 1, 1)
+			brick.display().redraw()
+			}
 		mailbox.send(mailbox.myHullNumber() + " " + left + " " + front + " " + right);
-		
+		
 		script.wait(250);
 		
 		//brick.motor(M3).setPower(script.random(-100, 100));
