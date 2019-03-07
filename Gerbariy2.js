@@ -383,14 +383,28 @@ function eht(cm,v)
 	
 		drf = 0
 	
-		var L = 12 // расстояние до стены (идеал)
+		var L = 11 // расстояние до стены (идеал)
 		var d = 0 // расстояние до стены(реал)
+		var d1 = 0 // расстояние до стены справа
 		var fl = false
 		while (-eL() < pth)
 
 			{
 				left = brick.sensor("A1").read();
+				right = brick.sensor("A2").read();
 				front = brick.sensor("D1").read();
+				er3 = ((L - d) - (L - d1))
+				ang += er3 / 10
+				
+				if (2<left && left < 100)
+					{
+							d = left
+					}
+				if (2<right && right < 100)
+					{
+							d1 = right
+					}
+				
 				if (eL() < path0 + startStop) {vM += dV;}
 
 				else if (eL() > path0 + startStop * 3) { vM -= dV }
@@ -402,11 +416,7 @@ function eht(cm,v)
 				er2 = eR() - eL();
 				
 				
-				if (2<left && left < 100)
-					{
-							d = left
-					}
-				if (d < 25 && Math.abs(d - L) > 1){
+				/*if (d < 25 && Math.abs(d - L) > 1){
 				//ang = brick.gyroscope().read()[6] / 1000
 				er3 = (L-d) > 0 ? 15 : -15
 				er1 = 0
@@ -417,12 +427,15 @@ function eht(cm,v)
 					fl = true;
 					print("FLAGGED WITH SENS "+d)
 					}
-				er2 = 0;
-				uV = er1 * 2 + er2 + er3;
+				er2 = 0;*/
+				er3 = ((L - d) - (L - d1))
+				ang += er3 / 10
+					
+				uV = er1;
 				brick.display().addLabel("er3: "+er3 + " uV: "+uV, 1, 60)
 				print("er3: "+er3 + " uV: "+uV)
 				motors(robot.v - uV, robot.v + uV)
-				if(brick.sensor("A2").read() <= cell_size / 2 - robot.to_ik2 + 5) break;
+				if(front <= cell_size / 2 - robot.to_ik2 + 5) break;
 				script.wait(100);
 
 			}
