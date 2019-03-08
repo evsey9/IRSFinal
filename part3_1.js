@@ -40,7 +40,7 @@ KOEF_FORWARD = 0
 //if (mailbox.myHullNumber() == 1){ 
 	var cellLength = 900;
 	degree_left = 90;
-	degree_right = 90;
+	degree_right = -90;
 	target = 200
 	stop_turn = 1;
 	stop_forward = 1;
@@ -73,261 +73,69 @@ if (mailbox.myHullNumber() == 3){
 // Номер сектора pos с координатами x, y:
 // pos = x + y*8
 lab = [ [9,2],
-
-
-
     [3,1],
-
-
-
     [2,11,4],
-
-
-
     [3,5],
-
-
-
     [4,6],
-
-
-
     [5,14],
-
-
-
     [],
-
-
-
     [16],
-
-
-
     [1,17],
-
-
-
     [],
-
-
-
-    [3,9],
-
-
-
+    [3,19],
     [20],
-
-
-
     [],
-
-
-
     [6,22,15],
-
-
-
     [14,16],
-
-
-
     [8,15],
-
-
-
     [9,18],
-
-
-
     [17,19],
-
-
-
     [11,18,27],
-
-
-
     [28,12,21],
-
-
-
     [20,22],
-
-
-
     [21,14,30],
-
-
-
     [],
-
-
-
     [32],
-
-
-
     [33],
-
-
-
     [],
-
-
-
     [35,19],
-
-
-
     [20],
-
-
-
     [],
-
-
-
     [38,31,22],
-
-
-
     [30,32],
-
-
-
-    [24,40],
-
-
-
+    [24,40,31],
     [25,34,41],
-
-
-
-    [35,35],
-
-
-
+    [33,35],
     [34,27,36,43],
-
-
-
     [35,37],
-
-
-
     [38,45,36],
-
-
-
     [37,46,30],
-
-
-
     [],
-
-
-
     [32],
-
-
-
     [33],
-
-
-
     [],
-
-
-
     [51,35],
-
-
-
     [],
-
-
-
     [37,46],
-
-
-
     [38,54,45,47],
-
-
-
     [46,48],
-
-
-
     [47,56],
-
-
-
     [57,50],
-
-
-
     [49,51],
-
-
-
     [50,43,52,59],
-
-
-
     [51,60],
-
-
-
     [],
-
-
-
     [46],
-
-
-
     [],
-
-
-
     [48,64],
-
-
-
     [49],
-
-
-
     [],
-
-
-
     [51,60],
-
-
-
     [59,61,52],
-
-
-
     [60,62],
-
-
-
     [61,63],
-
-
-
     [62,64],
-
-
-
     [63,56],
-
-
-
     ]
 
 function reverse(arr)
@@ -895,115 +703,8 @@ function make_sequence(path, dir, start){
 	return spath;
 }
 
-var adj = [[-1, 1, 8, -1], [-1, 2, -1, 0], [-1, 3, 10, 1], [-1, 4, -1, 2], [-1, 5, -1, 3], [-1, -1, 13, 4], [-1, -1, -1, -1], [-1, -1, 15, -1], [0, -1, 16, -1], [-1, -1, -1, -1], [2, -1, 18, -1], [-1, -1, 19, -1], [-1, -1, -1, -1], [5, 14, 21, -1], [-1, 15, -1, 13], [7, -1, -1, 14], [8, 17, -1, -1], [-1, 18, -1, 16], [10, -1, 26, 17], [11, 20, 27, -1], [-1, 21, -1, 19], [13, -1, 29, 20], [-1, -1, -1, -1], [-1, -1, 31, -1], [-1, -1, 32, -1], [-1, -1, -1, -1], [18, -1, 34, -1], [19, -1, -1, -1], [-1, -1, -1, -1], [21, 30, 37, -1], [-1, 31, -1, 29], [23, -1, 39, 30], [24, 33, 40, -1], [-1, 34, -1, 32], [26, 35, 42, 33], [-1, 36, -1, 34], [-1, 37, 44, 35], [29, -1, 45, 36], [-1, -1, -1, -1], [31, -1, -1, -1], [32, -1, -1, -1], [-1, -1, -1, -1], [34, -1, 50, -1], [-1, -1, -1, -1], [36, 45, -1, -1], [37, 46, 53, 44], [-1, 47, -1, 45], [-1, -1, 55, 46], [-1, 49, 56, -1], [-1, 50, -1, 48], [42, 51, 58, 49], [-1, -1, 59, 50], [-1, -1, -1, -1], [45, -1, -1, -1], [-1, -1, -1, -1], [47, -1, 63, -1], [48, -1, -1, -1], [-1, -1, -1, -1], [50, 59, -1, -1], [51, 60, -1, 58], [-1, 61, -1, 59], [-1, 62, -1, 60], [-1, 63, -1, 61], [55, -1, -1, 62]];
-
-// Варианты позиций (массив элементов вида [pos, dir])
-var states = [];
-
-// Месторасположение роботов
-var robot1_pos = 0;
-var robot1_dir = 0;
 
 
-// Инициализация массива со всеми вариантами позиций роботов
-function init_states() {
-	states = [];
-	for (var robot_pos = 0; robot_pos < adj.length; robot_pos++)
-		for (var robot_dir = 0; robot_dir < 4; robot_dir++)
-			states.push([robot_pos, robot_dir]);
-}
-
-// Обновить месторасположения робота
-// action - один из символов ["F" (forward), "L" (turn left), "R" (turn right)]
-function update_positions(action) {
-	for (var state = states.length - 1; state >= 0; state--) {
-		var is_ok = true;
-		
-		var robot_pos = states[state][0];
-		var robot_dir = states[state][1];
-		
-		if (action == "F")
-			robot_pos = adj[robot_pos][robot_dir];
-		else if (action == "L")
-			robot_dir = (robot_dir + 3) % 4;
-		else if (action == "R")
-			robot_dir = (robot_dir + 1) % 4;
-			
-		if (robot_pos == -1) {
-			states.splice(state, 1);
-		} else {
-			states[state][0] = robot_pos;
-			states[state][1] = robot_dir;
-		}
-	}
-	print("**")
-	print(states)
-}
-
-// Отсеивание вариантов позиций роботов
-function update_states() {
-	// Показания с датчиков
-	var on_front = is_free_on_front();
-	var on_left = is_free_on_left();
-	var on_right = is_free_on_right();
-	for (var state = states.length - 1; state >= 0; state--) {
-		var is_ok = true;
-		
-		robot_pos = states[state][0];
-		robot_dir = states[state][1];
-		
-		// Проверка позиций справа/слева/спереди от робота
-		
-		var pos = adj[robot_pos][robot_dir];
-		is_ok = is_ok && (on_front == (pos != -1));
-		
-		pos = adj[robot_pos][(robot_dir + 3) % 4];
-		is_ok = is_ok && (on_left  == (pos != -1));
-		
-		pos = adj[robot_pos][(robot_dir + 1) % 4];
-		is_ok = is_ok && (on_right == (pos != -1));
-		
-		if (!is_ok) 
-			states.splice(state, 1);
-	}
-	print("*")
-	print(states)
-}
-
-// Локализация роботов, 
-// Возвращает true/false (удалось ли локализоваться)
-function localization() {
-	// TODO: Добавить задержки если нужно
-	init_states();
-	print(states)
-	update_states();
-	
-	// Движение по правилу правой руки
-	while (states.length > 1) {
-
-		if (is_free_on_right()) {
-			turn_right();
-			update_positions("R");
-			update_states();
-			forward();
-			update_positions("F");
-		} else if (is_free_on_front()) {
-			forward();
-			update_positions("F");
-		} else {
-			turn_left();
-			update_positions("L");
-		}
-		update_states();
-	}
-	
-	if (states.length == 1) {
-		robot1_pos = states[0][0];
-		robot1_dir = states[0][1];
-		return true;
-	} else
-		return false;
-}
 
 iRight = brick.sensor(A2)
 iLeft = brick.sensor(A1)
@@ -1189,6 +890,7 @@ function stop(){ //стоп моторов
 }
 function maze_move(){
 	var text = script.readAll("input.txt")
+	print(text)
 	var olab = lab
 	var startcoord = get_cell(parseInt((text[0].split(" "))[0]),parseInt((text[0].split(" "))[1]))
 	var finalcoord = get_cell(parseInt((text[1].split(" "))[0]),parseInt((text[1].split(" "))[1]))
@@ -1225,6 +927,7 @@ function maze_move(){
 		lab = olab
 		if (seq4.length < seq.length) seq = seq4
 		}
+	
 	for(var i = 0; i < seq.length; i += 1){
 			switch(seq[i]){
 				case "F":
