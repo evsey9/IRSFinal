@@ -780,8 +780,101 @@ function bfs(start,finish){
 
 
 
-
-
+function get_cell(x, y){
+    return 8 * y + x + 1
+}
+function get_coord(cell){
+    return [(cell - 1) % 8, Math.floor((cell - 1) / 8)]
+}
+function make_sequence(path, dir, start){
+    var cdir = dir
+    var spath = []
+    var i = 0
+    var coord = get_coord(start)
+	print(coord)
+	
+    var finalcoord = get_coord(path[path.length - 1])
+	print("FINAL: "+finalcoord)
+    while (!(coord[0] == finalcoord[0] && coord[1] == finalcoord[1])){
+		print("COORD: "+coord)
+		print("DIR: "+cdir)
+		print(coord == finalcoord)
+        var nextcoord = get_coord(path[i])
+        if (nextcoord[0] - coord[0] == 1){ //go right
+			print("RIGHT")
+            if (cdir == 1){ //facing up
+                spath += ["R"]
+            }
+            if (cdir == 2){ //facing right
+                //do nothing
+            }
+            if (cdir == 3){ //facing down
+                spath += ["L"]
+            }
+            if (cdir == 4){ //facing left
+                spath += ["R"]
+                spath += ["R"]
+            }
+            cdir = 2
+        }
+        else if (nextcoord[0] - coord[0] == -1){ //go left
+            if (cdir == 1){
+                spath += ["L"]
+            }
+            if (cdir == 2){
+                spath += ["R"]
+                spath += ["R"]
+            }
+            if (cdir == 3){
+                spath += ["R"]
+            }
+            if (cdir == 4){
+                //do nothing
+                
+            }
+            cdir = 4
+        }
+       else if (nextcoord[1] - coord[1] == 1){ //go down
+            if (cdir == 1){
+                spath += ["R"]
+                spath += ["R"]
+            }
+            if (cdir == 2){
+                spath += ["R"]
+            }
+            if (cdir == 3){
+                //do nothing
+            }
+            if (cdir == 4){
+                spath += ["L"]
+            }
+            cdir = 3
+        }
+        else if (nextcoord[1] - coord[1] == -1){ //go up
+            if (cdir == 1){
+                //do nothing
+            }
+            if (cdir == 2){
+                spath += ["L"]
+            }
+            if (cdir == 3){
+                spath += ["R"]
+                spath += ["R"]
+            }
+            if (cdir == 4){
+                spath += ["R"]
+                
+            }
+            cdir = 1
+        }
+        spath += ["F"]
+        i += 1
+		
+        coord = nextcoord
+		script.wait(250)
+    }
+	return spath;
+}
 
 
 
@@ -798,12 +891,13 @@ var main = function()
 
 
 
+	var startcoord = get_cell(0,0)
+	var finalcoord = get_cell(1,0)
+	var startdir = 4
 
 
-
-
-	print(bfs(1,57));
-
+	print(bfs(startcoord,finalcoord));
+    print(make_sequence(bfs(startcoord,finalcoord), startdir, startcoord))
 
 
 	
@@ -815,14 +909,3 @@ var main = function()
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
