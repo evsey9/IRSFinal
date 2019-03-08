@@ -137,7 +137,15 @@ lab = [ [9,2],
     [62,64],
     [63,56],
     ]
-
+function block(cell)
+{
+	lab[cell - 1] = []
+	for(var i = 0; i < 64; i += 1){
+		if (lab[i].indexOf(cell) != -1){
+			lab[i].splice(lab[i].indexOf(cell), 1)
+			}
+		}
+}
 function reverse(arr)
 
 
@@ -895,37 +903,45 @@ function maze_move(){
 	var startcoord = get_cell(parseInt((text[0].split(" "))[0]),parseInt((text[0].split(" "))[1]))
 	var finalcoord = get_cell(parseInt((text[1].split(" "))[0]),parseInt((text[1].split(" "))[1]))
 	var startdir = parseInt((text[0].split(" "))[2]) + 1
-	var seq = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+	var bseq = bfs(startcoord,finalcoord)
+	var seq = make_sequence(bseq, startdir, startcoord)
 	//print(finalcoord)
-	if (startcoord != 52 && finalcoord != 52 && startcoord != 45 && finalcoord != 45 && false){
+	//Problematic spots: 45, 52, 56, 63, 2, 5
+	/*if (startcoord != 52 && finalcoord != 52 && startcoord != 45 && finalcoord != 45 && false){
 		lab = olab
-		lab[44] = []
-		lab[51] = []
-		lab[36] = [36, 38]
-		lab[45] = [38, 47, 54]
-		lab[59] = [59, 61]
-		lab[50] = [43, 50, 59]
-		var seq2 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+		block(45)
+		block(52)
+		var seqn = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
 		lab = olab
-		if (seq2.length < seq.length) seq = seq2
-		}
+		if (seqn.length < seq.length) seq = seqn
+		}*/
 	if (startcoord != 52 && finalcoord != 52 ){
-		lab = olab
-		lab[51] = []
-		lab[59] = [59, 61]
-		lab[50] = [43, 50, 59]
-		var seq3 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
-		lab = olab
-		if (seq3.length < seq.length) seq = seq3
+		//lab = olab
+		block(52)
+		bseq1 = bfs(startcoord,finalcoord)
+		var seqn = make_sequence(bseq1, startdir, startcoord)
+		//lab = olab
+		if (seqn.length < seq.length) { seq = seqn; bseq = bseq1 }
 		}
 	if (startcoord != 45 && finalcoord != 45){
-		lab = olab
-		lab[44] = []
-		lab[36] = [36, 38]
-		lab[45] = [38, 47, 54]
-		var seq4 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
-		lab = olab
-		if (seq4.length < seq.length) seq = seq4
+		//lab = olab
+		block(45)
+		bseq1 = bfs(startcoord,finalcoord)
+		var seqn = make_sequence(bseq1, startdir, startcoord)
+		//lab = olab
+		if (seqn.length < seq.length){ seq = seqn; bseq = bseq1 }
+		}
+	if (bseq.indexOf(18) != -1 && startcoord != 18 && finalcoord != 18){
+		var olab1 = lab
+		block(18)
+		bseq1 = bfs(startcoord,finalcoord)
+		var seqn = make_sequence(bseq1, startdir, startcoord)
+		/*lab = olab1
+		if (seqn.length < seq.length) seq = seqn
+		block(47)
+		var seqn = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+		lab = olab1*/
+		if (seqn.length < seq.length){ seq = seqn; bseq = bseq1 }
 		}
 	
 	for(var i = 0; i < seq.length; i += 1){
