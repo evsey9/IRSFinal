@@ -3,830 +3,838 @@ var pi = 3.1415926535897931;
 // adj[i][j] содержит номер сектора, который находится по направлению 0 <= j <= 3 от i-ой сектора
 // или -1 если такого нет
 // Номер сектора pos с координатами x, y:
-// pos = x + y*8
-lab = [ [9,2],
-
-
-
-    [3,1],
-
-
-
-    [2,11,4],
-
-
-
-    [3,5],
-
-
-
-    [4,6],
-
-
-
-    [5,14],
-
-
-
-    [],
-
-
-
-    [16],
-
-
-
-    [1,17],
-
-
-
-    [],
-
-
-
-    [3,9],
-
-
-
-    [20],
-
-
-
-    [],
-
-
-
-    [6,22,15],
-
-
-
-    [14,16],
-
-
-
-    [8,15],
-
-
-
-    [9,18],
-
-
-
-    [17,19],
-
-
-
-    [11,18,27],
-
-
-
-    [28,12,21],
-
-
-
-    [20,22],
-
-
-
-    [21,14,30],
-
-
-
-    [],
-
-
-
-    [32],
-
-
-
-    [33],
-
-
-
-    [],
-
-
-
-    [35,19],
-
-
-
-    [20],
-
-
-
-    [],
-
-
-
-    [38,31,22],
-
-
-
-    [30,32],
-
-
-
-    [24,40],
-
-
-
-    [25,34,41],
-
-
-
-    [35,35],
-
-
-
-    [34,27,36,43],
-
-
-
-    [35,37],
-
-
-
-    [38,45,36],
-
-
-
-    [37,46,30],
-
-
-
-    [],
-
-
-
-    [32],
-
-
-
-    [33],
-
-
-
-    [],
-
-
-
-    [51,35],
-
-
-
-    [],
-
-
-
-    [37,46],
-
-
-
-    [38,54,45,47],
-
-
-
-    [46,48],
-
-
-
-    [47,56],
-
-
-
-    [57,50],
-
-
-
-    [49,51],
-
-
-
-    [50,43,52,59],
-
-
-
-    [51,60],
-
-
-
-    [],
-
-
-
-    [46],
-
-
-
-    [],
-
-
-
-    [48,64],
-
-
-
-    [49],
-
-
-
-    [],
-
-
-
-    [51,60],
-
-
-
-    [59,61,52],
-
-
-
-    [60,62],
-
-
-
-    [61,63],
-
-
-
-    [62,64],
-
-
-
-    [63,56],
-
-
-
-    ]
-
-function reverse(arr)
-
-
-
-
-
-
-
+// pos = x + y*8
+lab = [ [9,2],
+
+
+
+    [3,1],
+
+
+
+    [2,11,4],
+
+
+
+    [3,5],
+
+
+
+    [4,6],
+
+
+
+    [5,14],
+
+
+
+    [],
+
+
+
+    [16],
+
+
+
+    [1,17],
+
+
+
+    [],
+
+
+
+    [3,9],
+
+
+
+    [20],
+
+
+
+    [],
+
+
+
+    [6,22,15],
+
+
+
+    [14,16],
+
+
+
+    [8,15],
+
+
+
+    [9,18],
+
+
+
+    [17,19],
+
+
+
+    [11,18,27],
+
+
+
+    [28,12,21],
+
+
+
+    [20,22],
+
+
+
+    [21,14,30],
+
+
+
+    [],
+
+
+
+    [32],
+
+
+
+    [33],
+
+
+
+    [],
+
+
+
+    [35,19],
+
+
+
+    [20],
+
+
+
+    [],
+
+
+
+    [38,31,22],
+
+
+
+    [30,32],
+
+
+
+    [24,40],
+
+
+
+    [25,34,41],
+
+
+
+    [35,35],
+
+
+
+    [34,27,36,43],
+
+
+
+    [35,37],
+
+
+
+    [38,45,36],
+
+
+
+    [37,46,30],
+
+
+
+    [],
+
+
+
+    [32],
+
+
+
+    [33],
+
+
+
+    [],
+
+
+
+    [51,35],
+
+
+
+    [],
+
+
+
+    [37,46],
+
+
+
+    [38,54,45,47],
+
+
+
+    [46,48],
+
+
+
+    [47,56],
+
+
+
+    [57,50],
+
+
+
+    [49,51],
+
+
+
+    [50,43,52,59],
+
+
+
+    [51,60],
+
+
+
+    [],
+
+
+
+    [46],
+
+
+
+    [],
+
+
+
+    [48,64],
+
+
+
+    [49],
+
+
+
+    [],
+
+
+
+    [51,60],
+
+
+
+    [59,61,52],
+
+
+
+    [60,62],
+
+
+
+    [61,63],
+
+
+
+    [62,64],
+
+
+
+    [63,56],
+
+
+
+    ]
+function block(cell)
 {
-
-
-
-
-
-
-
-	z = arr
-
-
-
-
-
-
-
-	jl = z.length;
-
-
-
-
-
-
-
-	for (var j = 0; j < jl/2; j += 1)
-
-
-
-
-
-
-
-	{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			j_rev = jl - (j) - 1;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			temp = z[j_rev];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			z[j_rev] = z[j];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			z[j] = temp;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	}		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  return z
-
-
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function bfs(start,finish){
-
-
-
-
-
-
-
-    var n = 64;
-
-
-
-
-
-
-
-    var Prev = new Array((n + 1));
-
-
-
-
-
-
-
-	for (i = 0; i < Prev.length; i += 1)
-
-
-
-		{
-
-
-
-			Prev[i] = -1;
-
-
-
+	lab[cell - 1] = []
+	for(int i = 0; i < 64; i += 1){
+		if (lab[i].indexOf(cell) != -1){
+			lab[i].splice(lab[i].indexOf(cell), 1)
+			}
 		}
-
-
-
-
-
-
-
-    var D = new Array(n+1);
-
-
-
-
-
-
-
-	for (i = 0; i < D.length; i += 1)
-
-
-
-		{
-
-
-
-			D[i] = -1;
-
-
-
-		}
-
-
-
-
-
-
-
-    D[start] = 0;
-
-
-
-
-
-
-
-    var Q = [start];
-
-
-
-
-
-
-
-    var Qstart = 0;
-
-
-
-
-
-
-
-    while (Qstart < Q.length)
-
-
-	{
-
-
-        var u = Q[Qstart];
-
-        Qstart += 1 ;
-
-
-        for (i = 0; i < lab[u-1].length; i += 1) //v in lab[u-1]
-
-
-		{
-
-			var v = lab[u-1][i];
-
-            if (D[v] == -1){
-
-
-                Prev[v] = u;
-
-                D[v] = D[u] + 1 ;
-
-
-
-
-
-
-
-                Q.push(v);}
-
-
-
-
-
-
-
-		}
-
-
-
-
-
-
-
-	}
-
-
-
-	
-
-
-
-	function dv_per(dir,targ,coord)
-
-
-
-	{
-
-
-
-		var d = coord - targ;
-
-
-
-		var i_d = 0;
-
-
-
-		switch (d)
-
-
-
-		{
-
-
-
-			case 8:
-
-
-
-				i_d = 1;
-
-
-
-				break
-
-
-
-			case -1:
-
-
-
-				i_d = 2;
-
-
-
-				break;
-
-
-
-			case -8:
-
-
-
-				i_d = 3;
-
-
-
-				break;
-
-
-
-			case 1:
-
-
-
-				i_d = 4;
-
-
-
-				break;
-
-
-
-			}	
-
-		dela = (i_d - dir)*90;
-
-		dela = min(Math.abs(dela), Math.abs(360 - dela));
-
-		dela *= (i_d-dir)/Math.abs(i_d-dir);
-
-		rotate(dela);
-
-		eht(80);
-
-	}
-
-
-
-
-
-
-
-    Ans = [];
-
-
-
-
-
-
-
-    curr = finish;
-
-
-
-
-
-
-
-    while (curr != start){
-
-
-
-
-
-
-
-        Ans.push(curr);
-
-
-
-
-
-
-
-        curr = Prev[curr];
-
-
-
-
-
-
-
-	}
-
-
-
-
-
-
-
-    Ans = reverse(Ans);
-
-
-
-
-
-
-
-    return Ans;	
-
-
-
-}
-
-
-
-
-
-function get_cell(x, y){
-    return 8 * y + x + 1
-}
-function get_coord(cell){
-    return [(cell - 1) % 8, Math.floor((cell - 1) / 8)]
-}
-function make_sequence(path, dir, start){
-    var cdir = dir
-    var spath = []
-    var i = 0
-    var coord = get_coord(start)
-	//print(coord)
-	
-    var finalcoord = get_coord(path[path.length - 1])
-	//print("FINAL: "+finalcoord)
-    while (!(coord[0] == finalcoord[0] && coord[1] == finalcoord[1])){
-		//print("COORD: "+coord)
-		//print("DIR: "+cdir)
-		//print(coord == finalcoord)
-        var nextcoord = get_coord(path[i])
-        if (nextcoord[0] - coord[0] == 1){ //go right
-            if (cdir == 1){ //facing up
-                spath += ["R"]
-            }
-            if (cdir == 2){ //facing right
-                //do nothing
-            }
-            if (cdir == 3){ //facing down
-                spath += ["L"]
-            }
-            if (cdir == 4){ //facing left
-                spath += ["R"]
-                spath += ["R"]
-            }
-            cdir = 2
-        }
-        else if (nextcoord[0] - coord[0] == -1){ //go left
-            if (cdir == 1){
-                spath += ["L"]
-            }
-            if (cdir == 2){
-                spath += ["R"]
-                spath += ["R"]
-            }
-            if (cdir == 3){
-                spath += ["R"]
-            }
-            if (cdir == 4){
-                //do nothing
-                
-            }
-            cdir = 4
-        }
-       else if (nextcoord[1] - coord[1] == 1){ //go down
-            if (cdir == 1){
-                spath += ["R"]
-                spath += ["R"]
-            }
-            if (cdir == 2){
-                spath += ["R"]
-            }
-            if (cdir == 3){
-                //do nothing
-            }
-            if (cdir == 4){
-                spath += ["L"]
-            }
-            cdir = 3
-        }
-        else if (nextcoord[1] - coord[1] == -1){ //go up
-            if (cdir == 1){
-                //do nothing
-            }
-            if (cdir == 2){
-                spath += ["L"]
-            }
-            if (cdir == 3){
-                spath += ["R"]
-                spath += ["R"]
-            }
-            if (cdir == 4){
-                spath += ["R"]
-                
-            }
-            cdir = 1
-        }
-        spath += ["F"]
-        i += 1
-		
-        coord = nextcoord
-		
-    }
-	//print(spath)
-	return spath;
-}
-
+}
+function reverse(arr)
+
+
+
+
+
+
+
+{
+
+
+
+
+
+
+
+	z = arr
+
+
+
+
+
+
+
+	jl = z.length;
+
+
+
+
+
+
+
+	for (var j = 0; j < jl/2; j += 1)
+
+
+
+
+
+
+
+	{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			j_rev = jl - (j) - 1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			temp = z[j_rev];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			z[j_rev] = z[j];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			z[j] = temp;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	}		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  return z
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function bfs(start,finish){
+
+
+
+
+
+
+
+    var n = 64;
+
+
+
+
+
+
+
+    var Prev = new Array((n + 1));
+
+
+
+
+
+
+
+	for (i = 0; i < Prev.length; i += 1)
+
+
+
+		{
+
+
+
+			Prev[i] = -1;
+
+
+
+		}
+
+
+
+
+
+
+
+    var D = new Array(n+1);
+
+
+
+
+
+
+
+	for (i = 0; i < D.length; i += 1)
+
+
+
+		{
+
+
+
+			D[i] = -1;
+
+
+
+		}
+
+
+
+
+
+
+
+    D[start] = 0;
+
+
+
+
+
+
+
+    var Q = [start];
+
+
+
+
+
+
+
+    var Qstart = 0;
+
+
+
+
+
+
+
+    while (Qstart < Q.length)
+
+
+	{
+
+
+        var u = Q[Qstart];
+
+        Qstart += 1 ;
+
+
+        for (i = 0; i < lab[u-1].length; i += 1) //v in lab[u-1]
+
+
+		{
+
+			var v = lab[u-1][i];
+
+            if (D[v] == -1){
+
+
+                Prev[v] = u;
+
+                D[v] = D[u] + 1 ;
+
+
+
+
+
+
+
+                Q.push(v);}
+
+
+
+
+
+
+
+		}
+
+
+
+
+
+
+
+	}
+
+
+
+	
+
+
+
+	function dv_per(dir,targ,coord)
+
+
+
+	{
+
+
+
+		var d = coord - targ;
+
+
+
+		var i_d = 0;
+
+
+
+		switch (d)
+
+
+
+		{
+
+
+
+			case 8:
+
+
+
+				i_d = 1;
+
+
+
+				break
+
+
+
+			case -1:
+
+
+
+				i_d = 2;
+
+
+
+				break;
+
+
+
+			case -8:
+
+
+
+				i_d = 3;
+
+
+
+				break;
+
+
+
+			case 1:
+
+
+
+				i_d = 4;
+
+
+
+				break;
+
+
+
+			}	
+
+		dela = (i_d - dir)*90;
+
+		dela = min(Math.abs(dela), Math.abs(360 - dela));
+
+		dela *= (i_d-dir)/Math.abs(i_d-dir);
+
+		rotate(dela);
+
+		eht(80);
+
+	}
+
+
+
+
+
+
+
+    Ans = [];
+
+
+
+
+
+
+
+    curr = finish;
+
+
+
+
+
+
+
+    while (curr != start){
+
+
+
+
+
+
+
+        Ans.push(curr);
+
+
+
+
+
+
+
+        curr = Prev[curr];
+
+
+
+
+
+
+
+	}
+
+
+
+
+
+
+
+    Ans = reverse(Ans);
+
+
+
+
+
+
+
+    return Ans;	
+
+
+
+}
+
+
+
+
+
+function get_cell(x, y){
+    return 8 * y + x + 1
+}
+function get_coord(cell){
+    return [(cell - 1) % 8, Math.floor((cell - 1) / 8)]
+}
+function make_sequence(path, dir, start){
+    var cdir = dir
+    var spath = []
+    var i = 0
+    var coord = get_coord(start)
+	//print(coord)
+	
+    var finalcoord = get_coord(path[path.length - 1])
+	//print("FINAL: "+finalcoord)
+    while (!(coord[0] == finalcoord[0] && coord[1] == finalcoord[1])){
+		//print("COORD: "+coord)
+		//print("DIR: "+cdir)
+		//print(coord == finalcoord)
+        var nextcoord = get_coord(path[i])
+        if (nextcoord[0] - coord[0] == 1){ //go right
+            if (cdir == 1){ //facing up
+                spath += ["R"]
+            }
+            if (cdir == 2){ //facing right
+                //do nothing
+            }
+            if (cdir == 3){ //facing down
+                spath += ["L"]
+            }
+            if (cdir == 4){ //facing left
+                spath += ["R"]
+                spath += ["R"]
+            }
+            cdir = 2
+        }
+        else if (nextcoord[0] - coord[0] == -1){ //go left
+            if (cdir == 1){
+                spath += ["L"]
+            }
+            if (cdir == 2){
+                spath += ["R"]
+                spath += ["R"]
+            }
+            if (cdir == 3){
+                spath += ["R"]
+            }
+            if (cdir == 4){
+                //do nothing
+                
+            }
+            cdir = 4
+        }
+       else if (nextcoord[1] - coord[1] == 1){ //go down
+            if (cdir == 1){
+                spath += ["R"]
+                spath += ["R"]
+            }
+            if (cdir == 2){
+                spath += ["R"]
+            }
+            if (cdir == 3){
+                //do nothing
+            }
+            if (cdir == 4){
+                spath += ["L"]
+            }
+            cdir = 3
+        }
+        else if (nextcoord[1] - coord[1] == -1){ //go up
+            if (cdir == 1){
+                //do nothing
+            }
+            if (cdir == 2){
+                spath += ["L"]
+            }
+            if (cdir == 3){
+                spath += ["R"]
+                spath += ["R"]
+            }
+            if (cdir == 4){
+                spath += ["R"]
+                
+            }
+            cdir = 1
+        }
+        spath += ["F"]
+        i += 1
+		
+        coord = nextcoord
+		
+    }
+	//print(spath)
+	return spath;
+}
+
 
 var adj = [[-1, 1, 8, -1], [-1, 2, -1, 0], [-1, 3, 10, 1], [-1, 4, -1, 2], [-1, 5, -1, 3], [-1, -1, 13, 4], [-1, -1, -1, -1], [-1, -1, 15, -1], [0, -1, 16, -1], [-1, -1, -1, -1], [2, -1, 18, -1], [-1, -1, 19, -1], [-1, -1, -1, -1], [5, 14, 21, -1], [-1, 15, -1, 13], [7, -1, -1, 14], [8, 17, -1, -1], [-1, 18, -1, 16], [10, -1, 26, 17], [11, 20, 27, -1], [-1, 21, -1, 19], [13, -1, 29, 20], [-1, -1, -1, -1], [-1, -1, 31, -1], [-1, -1, 32, -1], [-1, -1, -1, -1], [18, -1, 34, -1], [19, -1, -1, -1], [-1, -1, -1, -1], [21, 30, 37, -1], [-1, 31, -1, 29], [23, -1, 39, 30], [24, 33, 40, -1], [-1, 34, -1, 32], [26, 35, 42, 33], [-1, 36, -1, 34], [-1, 37, 44, 35], [29, -1, 45, 36], [-1, -1, -1, -1], [31, -1, -1, -1], [32, -1, -1, -1], [-1, -1, -1, -1], [34, -1, 50, -1], [-1, -1, -1, -1], [36, 45, -1, -1], [37, 46, 53, 44], [-1, 47, -1, 45], [-1, -1, 55, 46], [-1, 49, 56, -1], [-1, 50, -1, 48], [42, 51, 58, 49], [-1, -1, 59, 50], [-1, -1, -1, -1], [45, -1, -1, -1], [-1, -1, -1, -1], [47, -1, 63, -1], [48, -1, -1, -1], [-1, -1, -1, -1], [50, 59, -1, -1], [51, 60, -1, 58], [-1, 61, -1, 59], [-1, 62, -1, 60], [-1, 63, -1, 61], [55, -1, -1, 62]];
 
@@ -1047,68 +1055,68 @@ function stop(){ //стоп моторов
 	motor_l(0)
 	script.wait(50)
 }
-function maze_move(){
-	var text = script.readAll("input.txt")
-	var olab = lab
-	var startcoord = get_cell(parseInt((text[0].split(" "))[0]),parseInt((text[0].split(" "))[1]))
-	var finalcoord = get_cell(parseInt((text[1].split(" "))[0]),parseInt((text[1].split(" "))[1]))
-	var startdir = parseInt((text[0].split(" "))[2]) + 1
-	var seq = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
-	//print(finalcoord)
-	if (startcoord != 52 && finalcoord != 52 && startcoord != 45 && finalcoord != 45 && false){
-		lab = olab
-		lab[44] = []
-		lab[51] = []
-		lab[36] = [36, 38]
-		lab[45] = [38, 47, 54]
-		lab[59] = [59, 61]
-		lab[50] = [43, 50, 59]
-		var seq2 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
-		lab = olab
-		if (seq2.length < seq.length) seq = seq2
-		}
-	if (startcoord != 52 && finalcoord != 52 ){
-		lab = olab
-		lab[51] = []
-		lab[59] = [59, 61]
-		lab[50] = [43, 50, 59]
-		var seq3 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
-		lab = olab
-		if (seq3.length < seq.length) seq = seq3
-		}
-	if (startcoord != 45 && finalcoord != 45){
-		lab = olab
-		lab[44] = []
-		lab[36] = [36, 38]
-		lab[45] = [38, 47, 54]
-		var seq4 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
-		lab = olab
-		if (seq4.length < seq.length) seq = seq4
-		}
-	for(var i = 0; i < seq.length; i += 1){
-			switch(seq[i]){
-				case "F":
-					forward();
-					break;
-				case "L":
-					turn_left();
-					break;
-				case "R":
-					turn_right();
-					break;
-				}
-		}
-	brick.display().addLabel(seq,1,1)
-	brick.display().redraw()
-	script.wait(5000)
-
+function maze_move(){
+	var text = script.readAll("input.txt")
+	var olab = lab
+	var startcoord = get_cell(parseInt((text[0].split(" "))[0]),parseInt((text[0].split(" "))[1]))
+	var finalcoord = get_cell(parseInt((text[1].split(" "))[0]),parseInt((text[1].split(" "))[1]))
+	var startdir = parseInt((text[0].split(" "))[2]) + 1
+	var seq = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+	//print(finalcoord)
+	if (startcoord != 52 && finalcoord != 52 && startcoord != 45 && finalcoord != 45 && false){
+		lab = olab
+		lab[44] = []
+		lab[51] = []
+		lab[36] = [36, 38]
+		lab[45] = [38, 47, 54]
+		lab[59] = [59, 61]
+		lab[50] = [43, 50, 59]
+		var seq2 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+		lab = olab
+		if (seq2.length < seq.length) seq = seq2
+		}
+	if (startcoord != 52 && finalcoord != 52 ){
+		lab = olab
+		lab[51] = []
+		lab[59] = [59, 61]
+		lab[50] = [43, 50, 59]
+		var seq3 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+		lab = olab
+		if (seq3.length < seq.length) seq = seq3
+		}
+	if (startcoord != 45 && finalcoord != 45){
+		lab = olab
+		lab[44] = []
+		lab[36] = [36, 38]
+		lab[45] = [38, 47, 54]
+		var seq4 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+		lab = olab
+		if (seq4.length < seq.length) seq = seq4
+		}
+	for(var i = 0; i < seq.length; i += 1){
+			switch(seq[i]){
+				case "F":
+					forward();
+					break;
+				case "L":
+					turn_left();
+					break;
+				case "R":
+					turn_right();
+					break;
+				}
+		}
+	brick.display().addLabel(seq,1,1)
+	brick.display().redraw()
+	script.wait(5000)
+
 }
 var main = function() {
 	brick.gyroscope().calibrate(2000); //калибровка гироскопа
 	script.wait(2050)
 
 	moveSmall() // небольшой проезд, чтобы встать по центру
-	maze_move()
+	maze_move()
 	//localization() //локализация
 
 	/*x = robot1_pos % 8 //координата x робота 
