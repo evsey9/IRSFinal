@@ -39,8 +39,8 @@ KOEF_FORWARD = 0
 
 //if (mailbox.myHullNumber() == 1){ 
 	var cellLength = 900;
-	degree_left = 90;
-	degree_right = -90;
+	degree_left = 89;
+	degree_right = -89;
 	target = 200
 	stop_turn = 1;
 	stop_forward = 1;
