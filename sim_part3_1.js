@@ -1,270 +1,76 @@
 var __interpretation_started_timestamp__;
 var pi = 3.1415926535897931;
 // adj[i][j] содержит номер сектора, который находится по направлению 0 <= j <= 3 от i-ой сектора
-// или -1 если такого нет
-// Номер сектора pos с координатами x, y:
-// pos = x + y*8
+
 lab = [ [9,2],
-
-
-
     [3,1],
-
-
-
     [2,11,4],
-
-
-
     [3,5],
-
-
-
     [4,6],
-
-
-
     [5,14],
-
-
-
     [],
-
-
-
     [16],
-
-
-
     [1,17],
-
-
-
     [],
-
-
-
-    [3,9],
-
-
-
+    [3,19],
     [20],
-
-
-
     [],
-
-
-
     [6,22,15],
-
-
-
     [14,16],
-
-
-
     [8,15],
-
-
-
     [9,18],
-
-
-
     [17,19],
-
-
-
     [11,18,27],
-
-
-
     [28,12,21],
-
-
-
     [20,22],
-
-
-
     [21,14,30],
-
-
-
     [],
-
-
-
     [32],
-
-
-
     [33],
-
-
-
     [],
-
-
-
     [35,19],
-
-
-
     [20],
-
-
-
     [],
-
-
-
     [38,31,22],
-
-
-
     [30,32],
-
-
-
-    [24,40],
-
-
-
+    [24,40,31],
     [25,34,41],
-
-
-
-    [35,35],
-
-
-
+    [33,35],
     [34,27,36,43],
-
-
-
     [35,37],
-
-
-
     [38,45,36],
-
-
-
     [37,46,30],
-
-
-
     [],
-
-
-
     [32],
-
-
-
     [33],
-
-
-
     [],
-
-
-
     [51,35],
-
-
-
     [],
-
-
-
     [37,46],
-
-
-
     [38,54,45,47],
-
-
-
     [46,48],
-
-
-
     [47,56],
-
-
-
     [57,50],
-
-
-
     [49,51],
-
-
-
     [50,43,52,59],
-
-
-
     [51,60],
-
-
-
     [],
-
-
-
     [46],
-
-
-
     [],
-
-
-
     [48,64],
-
-
-
     [49],
-
-
-
     [],
-
-
-
     [51,60],
-
-
-
     [59,61,52],
-
-
-
     [60,62],
-
-
-
     [61,63],
-
-
-
     [62,64],
-
-
-
     [63,56],
-
-
-
     ]
 function block(cell)
 {
 	lab[cell - 1] = []
-	for(int i = 0; i < 64; i += 1){
+	for(var i = 0; i < 64; i += 1){
 		if (lab[i].indexOf(cell) != -1){
 			lab[i].splice(lab[i].indexOf(cell), 1)
 			}
@@ -836,109 +642,8 @@ function make_sequence(path, dir, start){
 }
 
 
-var adj = [[-1, 1, 8, -1], [-1, 2, -1, 0], [-1, 3, 10, 1], [-1, 4, -1, 2], [-1, 5, -1, 3], [-1, -1, 13, 4], [-1, -1, -1, -1], [-1, -1, 15, -1], [0, -1, 16, -1], [-1, -1, -1, -1], [2, -1, 18, -1], [-1, -1, 19, -1], [-1, -1, -1, -1], [5, 14, 21, -1], [-1, 15, -1, 13], [7, -1, -1, 14], [8, 17, -1, -1], [-1, 18, -1, 16], [10, -1, 26, 17], [11, 20, 27, -1], [-1, 21, -1, 19], [13, -1, 29, 20], [-1, -1, -1, -1], [-1, -1, 31, -1], [-1, -1, 32, -1], [-1, -1, -1, -1], [18, -1, 34, -1], [19, -1, -1, -1], [-1, -1, -1, -1], [21, 30, 37, -1], [-1, 31, -1, 29], [23, -1, 39, 30], [24, 33, 40, -1], [-1, 34, -1, 32], [26, 35, 42, 33], [-1, 36, -1, 34], [-1, 37, 44, 35], [29, -1, 45, 36], [-1, -1, -1, -1], [31, -1, -1, -1], [32, -1, -1, -1], [-1, -1, -1, -1], [34, -1, 50, -1], [-1, -1, -1, -1], [36, 45, -1, -1], [37, 46, 53, 44], [-1, 47, -1, 45], [-1, -1, 55, 46], [-1, 49, 56, -1], [-1, 50, -1, 48], [42, 51, 58, 49], [-1, -1, 59, 50], [-1, -1, -1, -1], [45, -1, -1, -1], [-1, -1, -1, -1], [47, -1, 63, -1], [48, -1, -1, -1], [-1, -1, -1, -1], [50, 59, -1, -1], [51, 60, -1, 58], [-1, 61, -1, 59], [-1, 62, -1, 60], [-1, 63, -1, 61], [55, -1, -1, 62]];
-
-// Варианты позиций (массив элементов вида [pos, dir])
-var states = [];
-
-// Месторасположение роботов
-var robot1_pos = 0;
-var robot1_dir = 0;
 
 
-// Инициализация массива со всеми вариантами позиций роботов
-function init_states() {
-	states = [];
-	for (var robot_pos = 0; robot_pos < adj.length; robot_pos++)
-		for (var robot_dir = 0; robot_dir < 4; robot_dir++)
-			states.push([robot_pos, robot_dir]);
-}
-
-// Обновить месторасположения робота
-// action - один из символов ["F" (forward), "L" (turn left), "R" (turn right)]
-function update_positions(action) {
-	for (var state = states.length - 1; state >= 0; state--) {
-		var is_ok = true;
-		
-		var robot_pos = states[state][0];
-		var robot_dir = states[state][1];
-		
-		if (action == "F")
-			robot_pos = adj[robot_pos][robot_dir];
-		else if (action == "L")
-			robot_dir = (robot_dir + 3) % 4;
-		else if (action == "R")
-			robot_dir = (robot_dir + 1) % 4;
-			
-		if (robot_pos == -1) {
-			states.splice(state, 1);
-		} else {
-			states[state][0] = robot_pos;
-			states[state][1] = robot_dir;
-		}
-	}
-}
-
-// Отсеивание вариантов позиций роботов
-function update_states() {
-	// Показания с датчиков
-	var on_front = is_free_on_front();
-	var on_left = is_free_on_left();
-	var on_right = is_free_on_right();
-	for (var state = states.length - 1; state >= 0; state--) {
-		var is_ok = true;
-		
-		robot_pos = states[state][0];
-		robot_dir = states[state][1];
-		
-		// Проверка позиций справа/слева/спереди от робота
-		
-		var pos = adj[robot_pos][robot_dir];
-		is_ok = is_ok && (on_front == (pos != -1));
-		
-		pos = adj[robot_pos][(robot_dir + 3) % 4];
-		is_ok = is_ok && (on_left  == (pos != -1));
-		
-		pos = adj[robot_pos][(robot_dir + 1) % 4];
-		is_ok = is_ok && (on_right == (pos != -1));
-		
-		if (!is_ok) 
-			states.splice(state, 1);
-	}
-}
-
-// Локализация роботов, 
-// Возвращает true/false (удалось ли локализоваться)
-function localization() {
-	init_states();
-	update_states();
-	
-	// Движение по правилу правой руки
-	while (states.length > 1) {
-
-		if (is_free_on_right()) {
-			turn_right();
-			update_positions("R");
-			update_states();
-			forward();
-			update_positions("F");
-		} else if (is_free_on_front()) {
-			forward();
-			update_positions("F");
-		} else {
-			turn_left();
-			update_positions("L");
-		}
-		update_states();
-	}
-	
-	if (states.length == 1) {
-		robot1_pos = states[0][0];
-		robot1_dir = states[0][1];
-		return true;
-	} else
-		return false;
-}
 
 iRight = brick.sensor(A2) //иницилизация правого датчика
 iLeft = brick.sensor(A1) //иницилизация левого датчика
@@ -1055,44 +760,51 @@ function stop(){ //стоп моторов
 	motor_l(0)
 	script.wait(50)
 }
-function maze_move(){
+function maze_move(){
+	var i = 0;
+	var j = 0;
+	
 	var text = script.readAll("input.txt")
 	var olab = lab
 	var startcoord = get_cell(parseInt((text[0].split(" "))[0]),parseInt((text[0].split(" "))[1]))
 	var finalcoord = get_cell(parseInt((text[1].split(" "))[0]),parseInt((text[1].split(" "))[1]))
 	var startdir = parseInt((text[0].split(" "))[2]) + 1
 	var seq = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
-	//print(finalcoord)
-	if (startcoord != 52 && finalcoord != 52 && startcoord != 45 && finalcoord != 45 && false){
+	//print(finalcoord)
+	//Problematic spots: 45, 52, 56, 63, 2, 5
+	/*if (startcoord != 52 && finalcoord != 52 && startcoord != 45 && finalcoord != 45 && false){
 		lab = olab
-		lab[44] = []
-		lab[51] = []
-		lab[36] = [36, 38]
-		lab[45] = [38, 47, 54]
-		lab[59] = [59, 61]
-		lab[50] = [43, 50, 59]
-		var seq2 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+		block(45)
+		block(52)
+		var seqn = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
 		lab = olab
-		if (seq2.length < seq.length) seq = seq2
-		}
+		if (seqn.length < seq.length) seq = seqn
+		}*/
 	if (startcoord != 52 && finalcoord != 52 ){
-		lab = olab
-		lab[51] = []
-		lab[59] = [59, 61]
-		lab[50] = [43, 50, 59]
-		var seq3 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
-		lab = olab
-		if (seq3.length < seq.length) seq = seq3
+		//lab = olab
+		block(52)
+		var seqn = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+		//lab = olab
+		if (seqn.length < seq.length) seq = seqn
 		}
 	if (startcoord != 45 && finalcoord != 45){
-		lab = olab
-		lab[44] = []
-		lab[36] = [36, 38]
-		lab[45] = [38, 47, 54]
-		var seq4 = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
-		lab = olab
-		if (seq4.length < seq.length) seq = seq4
-		}
+		//lab = olab
+		block(45)
+		var seqn = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+		//lab = olab
+		if (seqn.length < seq.length) seq = seqn
+		}
+	/*if (finalcoord == 64 || finalcoord == 48){
+		var olab1 = lab
+		block(47)
+		var seqn = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+		lab = olab1
+		if (seqn.length < seq.length) seq = seqn
+		block(47)
+		var seqn = make_sequence(bfs(startcoord,finalcoord), startdir, startcoord)
+		lab = olab1
+		if (seqn.length < seq.length) seq = seqn
+		}*/
 	for(var i = 0; i < seq.length; i += 1){
 			switch(seq[i]){
 				case "F":
@@ -1117,12 +829,4 @@ var main = function() {
 
 	moveSmall() // небольшой проезд, чтобы встать по центру
 	maze_move()
-	//localization() //локализация
-
-	/*x = robot1_pos % 8 //координата x робота 
-	y = parseInt(robot1_pos / 8,10) //координата у робота 
-	brick.display().addLabel("("+x+","+y+")",1,1) //вывод ответа
-	brick.display().redraw()
-	script.wait(5000)*/
-	// TODO: Вывести месторасположение robot1_pos, robot1_dir
 }
