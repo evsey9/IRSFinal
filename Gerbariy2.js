@@ -399,20 +399,20 @@ function eht(cm,v)
 				if (2<left && left < 25)
 					{
 							d = left
-					}
-				else{
-					d = L
+					}
+				else{
+					d = L
 					}
 				if (2<right && right < 25)
 					{
 							d1 = right
 					}
-				else{
-					d1 = L
+				else{
+					d1 = L
 					}
-				er3 = ((L - d) - (L - d1))
-				ang += er3 / 10
-				print("el: "+-eL() + " startStop: "+startStop)
+				er3 = ((L - d) - (L - d1))
+				ang += er3 / 10
+				print("el: "+-eL() + " startStop: "+startStop)
 					if (-eL() < path0 + startStop) {vM += dV;}
 
 				else if (-eL() > path0 + startStop * 3) { vM -= dV }
@@ -448,7 +448,7 @@ function eht(cm,v)
 
 			}
 brick.motor("M1").brake(500);
-brick.motor("M2").brake(500);
+brick.motor("M2").brake(500);
 motors(0, 0);
 return fl;
 }
@@ -556,7 +556,7 @@ var main = function()
 {
 	
 	__interpretation_started_timestamp__ = Date.now();
-	var calibValues = [-207, -73, -81, -148, 31, 3977]
+	var calibValues = [-212, -77, -81, -112, 50, 3978]
 	brick.gyroscope().setCalibrationValues(calibValues)
 	//brick.gyroscope().calibrate(60000);
 	/*while(true){
@@ -572,13 +572,13 @@ var main = function()
 		}*/
 	//script.wait(61000);
 	//print(brick.gyroscope().getCalibrationValues())
-	//brick.playTone(1000, 50);
-	//script.wait(5000);
+	//brick.playTone(1000, 50);
+	//script.wait(5000);
 	//turnDirection(-90,50)
 	//turnDirection(90,50)
 	l_hand();
-	eht(cell_size);
-	script.wait(5000);
+	eht(cell_size);
+	script.wait(5000);
 	l_wall(280);
 	turnDirection(-90, 40);
 	l_wall(120);
