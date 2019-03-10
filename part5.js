@@ -454,11 +454,13 @@ mLeft(0);
 mRight(0);
 
 //инициализация и калибровка гироскопа
-brick.gyroscope().calibrate(15000);
-script.wait(16000);
-values = brick.gyroscope().getCalibrationValues();
-print(values);
 
+calibvalues = [-212, -77, -81, -112, 50, 3978]
+//brick.gyroscope().calibrate(60000);
+//script.wait(61000);
+//values = brick.gyroscope().getCalibrationValues();
+//print(values);
+brick.gyroscope().setCalibrationValues([-212, -77, -81, -112, 50, 3978])
 
 function angle()
 {
@@ -1138,7 +1140,7 @@ function get_coord(cell){
     return [cell % 8, Math.floor(cell / 8)]
 }
 var main = function() {
-	script.wait(5000);
+	//script.wait(5000);
 	robot_pos = [0, 0, 0];
 	robor_dir = [0, 0, 0];
 	var finish_pos = [0, 0, 0];
